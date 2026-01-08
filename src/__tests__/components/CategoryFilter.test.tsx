@@ -6,6 +6,7 @@ import { CategoryFilter } from '../../components/CategoryFilter'
 import productsReducer from '../../redux/slices/productsSlice'
 import filtersReducer from '../../redux/slices/filtersSlice'
 import favoritesReducer from '../../redux/slices/favoritesSlice'
+import categoriesReducer from '../../redux/slices/categoriesSlice'
 import * as api from '../../services/api'
 
 jest.mock('../../services/api')
@@ -17,9 +18,10 @@ const mockFetchCategories = api.fetchCategories as jest.MockedFunction<
 function createMockStore() {
   return configureStore({
     reducer: {
-      productsReducer,
-      filtersReducer,
-      favoritesReducer,
+      products: productsReducer,
+      filters: filtersReducer,
+      favorites: favoritesReducer,
+      categories: categoriesReducer,
     },
   })
 }
@@ -64,7 +66,7 @@ describe('CategoryFilter', () => {
     await user.selectOptions(select, 'electronics')
 
     const state = store.getState()
-    expect(state.filtersReducer.selectedCategory).toBe('electronics')
+    expect(state.filters.selectedCategory).toBe('electronics')
   })
 })
 

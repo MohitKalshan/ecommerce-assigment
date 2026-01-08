@@ -7,6 +7,7 @@ import { ProductListingPage } from '../../pages/ProductListingPage'
 import productsReducer from '../../redux/slices/productsSlice'
 import filtersReducer from '../../redux/slices/filtersSlice'
 import favoritesReducer from '../../redux/slices/favoritesSlice'
+import categoriesReducer from '../../redux/slices/categoriesSlice'
 import * as api from '../../services/api'
 import type { Product } from '../../types/product'
 
@@ -52,9 +53,10 @@ const mockProducts: Product[] = [
 function createMockStore() {
   return configureStore({
     reducer: {
-      productsReducer,
-      filtersReducer,
-      favoritesReducer,
+      products: productsReducer,
+      filters: filtersReducer,
+      favorites: favoritesReducer,
+      categories: categoriesReducer,
     },
   })
 }

@@ -1,48 +1,25 @@
-import { useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Heart, Star } from "lucide-react";
-import { fetchProductByIdThunk } from "../redux/slices/productsSlice";
-import { clearSelectedProduct } from "../redux/slices/productsSlice";
-import { toggleFavorite } from "../redux/slices/favoritesSlice";
 import { selectIsFavorite } from "../features/products/productsSelectors";
+import { useAppSelector } from "../redux/hooks";
 import { LoadingSpinner } from "../components/LoadingSpinner";
 import { ErrorMessage } from "../components/ErrorMessage";
 import { Badge } from "@/components/ui/badge";
-import type { AppDispatch, RootState } from "../redux/store";
+import { useProduct } from "../hooks/useProduct";
+import { useFavorites } from "../hooks/useFavorites";
+import { formatCategory } from "../utils/formatCategory";
 
 export function ProductDetailPage() {
-  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
-  const {
-    selectedProduct: product,
-    loading,
-    error,
-  } = useSelector((state: RootState) => state.productsReducer);
-  const isFavorite = useSelector((state: RootState) =>
+  const { product, loading, error, retry } = useProduct();
+  const { toggle } = useFavorites();
+  const isFavorite = useAppSelector((state) =>
     product ? selectIsFavorite(product.id)(state) : false
   );
 
-  useEffect(() => {
-    if (id) {
-      dispatch(fetchProductByIdThunk(Number.parseInt(id, 10)));
-    }
-
-    return () => {
-      dispatch(clearSelectedProduct());
-    };
-  }, [id, dispatch]);
-
   const handleToggleFavorite = () => {
     if (product) {
-      dispatch(toggleFavorite(product.id));
-    }
-  };
-
-  const handleRetry = () => {
-    if (id) {
-      dispatch(fetchProductByIdThunk(Number.parseInt(id, 10)));
+      toggle(product.id);
     }
   };
 
@@ -51,7 +28,7 @@ export function ProductDetailPage() {
   }
 
   if (error) {
-    return <ErrorMessage message={error} onRetry={handleRetry} />;
+    return <ErrorMessage message={error} onRetry={retry} />;
   }
 
   if (!product) {
@@ -94,7 +71,7 @@ export function ProductDetailPage() {
             <div className="md:w-1/2 p-12 flex flex-col">
               <div className="mb-6">
                 <Badge className="bg-blue-50 text-blue-600 border-blue-200 uppercase tracking-widest">
-                  {product.category}
+                  {formatCategory(product.category)}
                 </Badge>
               </div>
               <h1 className="text-4xl font-bold text-slate-900 mb-6 leading-tight">

@@ -8,6 +8,7 @@ import { FavoritesPage } from '../../pages/FavoritesPage'
 import productsReducer from '../../redux/slices/productsSlice'
 import filtersReducer from '../../redux/slices/filtersSlice'
 import favoritesReducer from '../../redux/slices/favoritesSlice'
+import categoriesReducer from '../../redux/slices/categoriesSlice'
 import * as api from '../../services/api'
 import type { Product } from '../../types/product'
 
@@ -44,9 +45,10 @@ const mockProducts: Product[] = [
 function createMockStore() {
   return configureStore({
     reducer: {
-      productsReducer,
-      filtersReducer,
-      favoritesReducer,
+      products: productsReducer,
+      filters: filtersReducer,
+      favorites: favoritesReducer,
+      categories: categoriesReducer,
     },
   })
 }
@@ -78,7 +80,7 @@ describe('Favorites Integration', () => {
 
     await waitFor(() => {
       const state = store.getState()
-      expect(state.favoritesReducer.favoriteIds).toContain(1)
+      expect(state.favorites.favoriteIds).toContain(1)
     })
   })
 
@@ -104,7 +106,7 @@ describe('Favorites Integration', () => {
 
     await waitFor(() => {
       const state = store.getState()
-      expect(state.favoritesReducer.favoriteIds).toContain(1)
+      expect(state.favorites.favoriteIds).toContain(1)
     })
 
     // Now navigate to favorites page
@@ -145,7 +147,7 @@ describe('Favorites Integration', () => {
 
     await waitFor(() => {
       const state = store.getState()
-      expect(state.favoritesReducer.favoriteIds).not.toContain(1)
+      expect(state.favorites.favoriteIds).not.toContain(1)
     })
   })
 
